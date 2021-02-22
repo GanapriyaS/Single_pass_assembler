@@ -37,7 +37,65 @@ bool isNumber(string s)
             return false;
     return true;
 }
+string* splitString(string line,int n)
+{
+  string *s=new string[n];
+  string word= "";
+  int v=0;
+  for (char x:line)
+  {
+    if(x==' ' && word!="")
+    {
 
+      s[v]=word;
+      word="";
+      if(v<n-1)
+      {
+      v=v+1;
+      }
+    }
+    if(x!=' ')
+    {
+    word=word+x;
+    }
+  }
+  s[v]=word;
+  return s;
+}
+string numprint(string h)
+{
+  for (int i = 0; i < h.size(); i++) {
+  if (h[i]< 48 || h[i]>57)
+  {
+      h.erase(i, 1);
+      i--;
+  }
+}
+return h;
+}
+string literalprint1(string y)
+{
+  for (int i = 0; i < y.length(); i++) {
+  if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57))
+  {
+      y.erase(i, 1);
+      i--;
+  }
+}
+return y;
+}
+string literalprint(string y)
+{
+  for (int i = 0; i < y.length(); i++)
+  {
+    if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57) && y[i]!='\'')
+    {
+        y.erase(i, 1);
+        i--;
+    }
+  }
+  return y;
+}
 //pass
 void pass()
 {
@@ -55,26 +113,7 @@ void pass()
     n=(line.find("DS")==string::npos && line.find("DC")==string::npos && line.find(":")==string::npos)?2:3;
     string *s=new string[n];
     string word= "";
-    v=0;
-    for (char x:line)
-    {
-      if(x==' ' && word!="")
-      {
-
-        s[v]=word;
-        word="";
-        if(v<n-1)
-        {
-        v=v+1;
-      }
-      }
-      if(x!=' ')
-      {
-      word=word+x;
-    }
-    }
-    s[v]=word;
-
+    s=splitString(line,n);
     int a,b;
     a=(n==3)?1:0;
     b=(n==3)?2:1;
@@ -96,14 +135,7 @@ void pass()
         else if(sy.find(s[0])!=-1)
           sy.modify(s[0],to_string(loc));
         string y=s[2];
-        for (int i = 0; i < y.length(); i++)
-        {
-          if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57) && y[i]!='\'')
-          {
-              y.erase(i, 1);
-              i--;
-          }
-        }
+        y=literalprint(y);
       out<<loc<<") - - ";
 
       if(isNumber(y))
@@ -113,14 +145,7 @@ void pass()
       }
       else
       {
-
-        for (int i = 0; i < y.length(); i++) {
-        if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57))
-        {
-            y.erase(i, 1);
-            i--;
-        }
-      }
+        y=literalprint1(y);
       loc=loc+int(y[0])-1;
         if(isNumber(y))
           out<<y;
@@ -133,12 +158,7 @@ void pass()
       else if(s[1].find("DC")!=string::npos)
       {
         string y=s[2];
-        for (int i = 0; i < y.length(); i++) {
-        if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57) && y[i]!='\'')
-        {
-            y.erase(i, 1);
-            i--;
-        }}
+        y=literalprint(y);
         if(sy.find(s[0])==-1)
           sy.insert(s[0],to_string(loc));
         else if(sy.find(s[0])!=-1)
@@ -150,13 +170,7 @@ void pass()
         }
         else
         {
-            for (int i = 0; i < y.length(); i++) {
-            if ((y[i] < 'A' || y[i] > 'Z') && (y[i] < 'a' || y[i] > 'z') && ( y[i]< 48 || y[i]>57))
-            {
-                y.erase(i, 1);
-                i--;
-            }
-          }
+            y=literalprint1(y);
             if(isNumber(y))
               out<<y;
             else
@@ -187,26 +201,14 @@ void pass()
           out<<"\n"<<loc<<") -"<<" - ";
         l1.code[key]=to_string(loc);
         string s=key;
-        for (int i = 0; i < s.length(); i++) {
-        if ((s[i] < 'A' || s[i] > 'Z') && (s[i] < 'a' || s[i] > 'z') && ( s[i]< 48 || s[i]>57) && s[i]!='\'')
-        {
-            s.erase(i, 1);
-            i--;
-        }
-      }
+        s=literalprint(s);
         if(isNumber(s))
         {
           out<<'0' + stoi(s);
         }
         else
         {
-          for (int i = 0; i < s.length(); i++) {
-          if ((s[i] < 'A' || s[i] > 'Z') && (s[i] < 'a' || s[i] > 'z') && ( s[i]< 48 || s[i]>57))
-          {
-              s.erase(i, 1);
-              i--;
-          }
-        }
+          s=literalprint1(s);
           if(isNumber(s))
             out<<s;
           else
@@ -408,38 +410,13 @@ void backpatching()
   {
     string *s=new string[4];
     string word= "";
-    v=0;
-    string ll="";
-    for (char x:line)
-    {
-      if(x==' ' && word!="")
-      {
-        s[v]=word;
-        if(v<3)
-        {
-        v=v+1;
-        }
-        else
-        {
-          break;
-        }
-        word="";
-      }
-      if(x!=' ')
-      {
-      word=word+x;
-      // if(line.find("--")!=string::npos)
-      ll=word;
-    }
-    }
-    s[v]=ll;
+    s=splitString(line,4);
     out<<s[0]<<" "<<s[1]<<" "<<s[2];
     if(s[3].find("--")!=string::npos)
     {
 
       int pos=s[0].find(')');
       string k=tii.code[s[0].substr(0,pos)];
-      cout<<k<<" ";
       if(sy.find(k)!=-1)
         out<<" "<<sy.head[sy.find(k)]->address;
       if(l1.code.find(k)!=l1.code.end() )
